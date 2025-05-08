@@ -1,4 +1,4 @@
-// Sensores infravermelhos (ajuste os pinos conforme sua liga��o)
+// Sensores infravermelhos (ajuste os pinos conforme sua ligação)
 const int S0 = 12;  // sensor extremo esquerdo
 const int S1 = 8;   // sensor esquerdo
 const int S2 = 2;   // sensor central
@@ -7,9 +7,9 @@ const int S4 = 7;   // sensor extremo direito
 
 // Motores (ajuste os pinos conforme seu L298N)
 const int lMotFwd = 11;  // IN1 - Motor esquerdo para frente
-const int lMotRev = 10;  // IN2 - Motor esquerdo para tr�s
+const int lMotRev = 10;  // IN2 - Motor esquerdo para trás
 const int rMotFwd = 5;   // IN3 - Motor direito para frente
-const int rMotRev = 6;   // IN4 - Motor direito para tr�s
+const int rMotRev = 6;   // IN4 - Motor direito para trás
 
 const int onblack = 300;  // leitura do sensor para preto
 const int onWhite = 700;  // leitura do sensor para branco
@@ -24,7 +24,7 @@ void setup() {
   pinMode(S3, INPUT);
   pinMode(S4, INPUT);
 
-  // Configura os pinos dos motores como sa�da
+  // Configura os pinos dos motores como saída
   pinMode(lMotFwd, OUTPUT);
   pinMode(rMotFwd, OUTPUT);
   pinMode(lMotRev, OUTPUT);
@@ -108,4 +108,128 @@ void loop() {
       turnCircle();  // caso esteja fora da linha
     }
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+// Sensores infravermelhos (ajuste os pinos conforme sua ligação)
+const int S0 = 12;  // sensor extremo esquerdo
+const int S1 = 8;   // sensor esquerdo
+const int S2 = 2;   // sensor central
+const int S3 = 4;   // sensor direito
+const int S4 = 7;   // sensor extremo direito
+
+// Motores (ajuste os pinos conforme seu L298N)
+const int lMotFwd = 11;  // IN1 - Motor esquerdo para frente
+const int lMotRev = 10;  // IN2 - Motor esquerdo para trás
+const int rMotFwd = 5;   // IN3 - Motor direito para frente
+const int rMotRev = 6;   // IN4 - Motor direito para trás
+
+const int onblack = 300;  // leitura do sensor para preto
+const int onWhite = 700;  // leitura do sensor para branco
+
+void setup() {
+  Serial.begin(9600);
+
+  // Configura os pinos dos sensores como entrada
+  pinMode(S0, INPUT);
+  pinMode(S1, INPUT);
+  pinMode(S2, INPUT);
+  pinMode(S3, INPUT);
+  pinMode(S4, INPUT);
+
+  // Configura os pinos dos motores como saída
+  pinMode(lMotFwd, OUTPUT);
+  pinMode(rMotFwd, OUTPUT);
+  pinMode(lMotRev, OUTPUT);
+  pinMode(rMotRev, OUTPUT);
+}
+
+bool isOnBlack(int sensor) {
+  return (sensor <= onblack);
+}
+
+bool isOnWhite(int sensor) {
+  return (sensor >= onWhite);
+}
+
+void moveForward() {
+  digitalWrite(lMotFwd, HIGH);
+  digitalWrite(rMotFwd, HIGH);
+  digitalWrite(lMotRev, LOW);
+  digitalWrite(rMotRev, LOW);
+}
+
+void turnLeft() {
+  digitalWrite(lMotFwd, LOW);
+  digitalWrite(rMotFwd, HIGH);
+  digitalWrite(lMotRev, LOW);
+  digitalWrite(rMotRev, LOW);
+}
+
+void turnRight() {
+  digitalWrite(lMotFwd, HIGH);
+  digitalWrite(rMotFwd, LOW);
+  digitalWrite(lMotRev, LOW);
+  digitalWrite(rMotRev, LOW);
+}
+
+void turnCircle() {
+  digitalWrite(lMotFwd, LOW);
+  digitalWrite(rMotRev, LOW);
+  digitalWrite(lMotRev, HIGH);
+  digitalWrite(rMotFwd, HIGH);
+}
+
+void Stop() {
+  digitalWrite(lMotFwd, LOW);
+  digitalWrite(rMotFwd, LOW);
+  digitalWrite(lMotRev, LOW);
+  digitalWrite(rMotRev, LOW);
+}
+
+void loop() {
+  int sensor1 = digitalRead(S0); // sensor extremo esquerdo
+  int sensor2 = digitalRead(S1); // sensor esquerdo
+  int sensor3 = digitalRead(S2); // sensor central
+  int sensor4 = digitalRead(S3); // sensor direito
+  int sensor5 = digitalRead(S4); // sensor extremo direito
+
+  Serial.print("extreme Left: ");
+  Serial.print(sensor1);
+  Serial.print("\t lower left: ");
+  Serial.print(sensor2);
+  Serial.print("\t middle: ");
+  Serial.print(sensor3);
+  Serial.print("\t lowerRight: ");
+  Serial.print(sensor4);
+  Serial.print("\t Extreme Right: ");
+  Serial.println(sensor5);
+
+  if (isOnBlack(sensor1)) {
+    turnLeft();
+  } else {
+    if (isOnBlack(sensor3) && isOnWhite(sensor1)) {
+      moveForward();
+    } else if (isOnWhite(sensor1) && isOnWhite(sensor3) && isOnBlack(sensor5)) {
+      turnRight();
+    } else if (isOnBlack(sensor2)) {
+      turnLeft();
+    } else if (isOnBlack(sensor4)) {
+      turnRight();
+    } else if (isOnWhite(sensor1) && isOnWhite(sensor2) && isOnWhite(sensor3) &&
+               isOnWhite(sensor4) && isOnWhite(sensor5)) {
+      turnCircle();  // caso esteja fora da linha
+    }
+  }
+
+  delay(1000);
 }
