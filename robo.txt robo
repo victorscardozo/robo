@@ -1,237 +1,110 @@
-// Sensores infravermelhos (ajuste os pinos conforme sua ligação)
-const int S0 = 12;  // sensor extremo esquerdo
-const int S1 = 8;   // sensor esquerdo
-const int S2 = 2;   // sensor central
-const int S3 = 4;   // sensor direito
-const int S4 = 7;   // sensor extremo direito
+// Declarando potenciômetro (opcional)
+#define pot A0
+int velocidade;
 
-// Motores (ajuste os pinos conforme seu L298N)
-const int lMotFwd = 11;  // IN1 - Motor esquerdo para frente
-const int lMotRev = 10;  // IN2 - Motor esquerdo para trás
-const int rMotFwd = 5;   // IN3 - Motor direito para frente
-const int rMotRev = 6;   // IN4 - Motor direito para trás
+// Sensores
+#define sensor1 12
+#define sensor2 8
+#define sensor3 2
+#define sensor4 4
+#define sensor5 7
 
-const int onblack = 300;  // leitura do sensor para preto
-const int onWhite = 700;  // leitura do sensor para branco
-
-void setup() {
-  Serial.begin(9600);
-
-  // Configura os pinos dos sensores como entrada
-  pinMode(S0, INPUT);
-  pinMode(S1, INPUT);
-  pinMode(S2, INPUT);
-  pinMode(S3, INPUT);
-  pinMode(S4, INPUT);
-
-  // Configura os pinos dos motores como saída
-  pinMode(lMotFwd, OUTPUT);
-  pinMode(rMotFwd, OUTPUT);
-  pinMode(lMotRev, OUTPUT);
-  pinMode(rMotRev, OUTPUT);
-}
-
-bool isOnBlack(int sensor) {
-  return (sensor <= onblack);
-}
-
-bool isOnWhite(int sensor) {
-  return (sensor >= onWhite);
-}
-
-void moveForward() {
-  digitalWrite(lMotFwd, HIGH);
-  digitalWrite(rMotFwd, HIGH);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
-}
-
-void turnLeft() {
-  digitalWrite(lMotFwd, LOW);
-  digitalWrite(rMotFwd, HIGH);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
-}
-
-void turnRight() {
-  digitalWrite(lMotFwd, HIGH);
-  digitalWrite(rMotFwd, LOW);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
-}
-
-void turnCircle() {
-  digitalWrite(lMotFwd, LOW);
-  digitalWrite(rMotRev, LOW);
-  digitalWrite(lMotRev, HIGH);
-  digitalWrite(rMotFwd, HIGH);
-}
-
-void Stop() {
-  digitalWrite(lMotFwd, LOW);
-  digitalWrite(rMotFwd, LOW);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
-}
-
-void loop() {
-  int sensor1 = analogRead(S0); // sensor extremo esquerdo
-  int sensor2 = analogRead(S1); // sensor esquerdo
-  int sensor3 = analogRead(S2); // sensor central
-  int sensor4 = analogRead(S3); // sensor direito
-  int sensor5 = analogRead(S4); // sensor extremo direito
-
-  Serial.print("extreme Left: ");
-  Serial.print(sensor1);
-  Serial.print("\t lower left: ");
-  Serial.print(sensor2);
-  Serial.print("\t middle: ");
-  Serial.print(sensor3);
-  Serial.print("\t lowerRight: ");
-  Serial.print(sensor4);
-  Serial.print("\t Extreme Right: ");
-  Serial.println(sensor5);
-
-  if (isOnBlack(sensor1)) {
-    turnLeft();
-  } else {
-    if (isOnBlack(sensor3) && isOnWhite(sensor1)) {
-      moveForward();
-    } else if (isOnWhite(sensor1) && isOnWhite(sensor3) && isOnBlack(sensor5)) {
-      turnRight();
-    } else if (isOnBlack(sensor2)) {
-      turnLeft();
-    } else if (isOnBlack(sensor4)) {
-      turnRight();
-    } else if (isOnWhite(sensor1) && isOnWhite(sensor2) && isOnWhite(sensor3) &&
-               isOnWhite(sensor4) && isOnWhite(sensor5)) {
-      turnCircle();  // caso esteja fora da linha
-    }
-  }
-}
-
-
-
-
----------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-// Sensores infravermelhos (ajuste os pinos conforme sua ligação)
-const int S0 = 12;  // sensor extremo esquerdo
-const int S1 = 8;   // sensor esquerdo
-const int S2 = 2;   // sensor central
-const int S3 = 4;   // sensor direito
-const int S4 = 7;   // sensor extremo direito
-
-// Motores (ajuste os pinos conforme seu L298N)
-const int lMotFwd = 11;  // IN1 - Motor esquerdo para frente
-const int lMotRev = 10;  // IN2 - Motor esquerdo para trás
-const int rMotFwd = 5;   // IN3 - Motor direito para frente
-const int rMotRev = 6;   // IN4 - Motor direito para trás
-
-const int onblack = 300;  // leitura do sensor para preto
-const int onWhite = 700;  // leitura do sensor para branco
+// Motores
+#define MA_frente 11
+#define MA_tras 10
+#define MB_frente 5
+#define MB_tras 6
 
 void setup() {
   Serial.begin(9600);
 
-  // Configura os pinos dos sensores como entrada
-  pinMode(S0, INPUT);
-  pinMode(S1, INPUT);
-  pinMode(S2, INPUT);
-  pinMode(S3, INPUT);
-  pinMode(S4, INPUT);
+  // Configura sensores como entrada
+  pinMode(sensor1, INPUT);
+  pinMode(sensor2, INPUT);
+  pinMode(sensor3, INPUT);
+  pinMode(sensor4, INPUT);
+  pinMode(sensor5, INPUT);
 
-  // Configura os pinos dos motores como saída
-  pinMode(lMotFwd, OUTPUT);
-  pinMode(rMotFwd, OUTPUT);
-  pinMode(lMotRev, OUTPUT);
-  pinMode(rMotRev, OUTPUT);
-}
-
-bool isOnBlack(int sensor) {
-  return (sensor <= onblack);
-}
-
-bool isOnWhite(int sensor) {
-  return (sensor >= onWhite);
-}
-
-void moveForward() {
-  digitalWrite(lMotFwd, HIGH);
-  digitalWrite(rMotFwd, HIGH);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
-}
-
-void turnLeft() {
-  digitalWrite(lMotFwd, LOW);
-  digitalWrite(rMotFwd, HIGH);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
-}
-
-void turnRight() {
-  digitalWrite(lMotFwd, HIGH);
-  digitalWrite(rMotFwd, LOW);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
-}
-
-void turnCircle() {
-  digitalWrite(lMotFwd, LOW);
-  digitalWrite(rMotRev, LOW);
-  digitalWrite(lMotRev, HIGH);
-  digitalWrite(rMotFwd, HIGH);
-}
-
-void Stop() {
-  digitalWrite(lMotFwd, LOW);
-  digitalWrite(rMotFwd, LOW);
-  digitalWrite(lMotRev, LOW);
-  digitalWrite(rMotRev, LOW);
+  // Configura motores como saída
+  pinMode(MA_frente, OUTPUT);
+  pinMode(MA_tras, OUTPUT);
+  pinMode(MB_frente, OUTPUT);
+  pinMode(MB_tras, OUTPUT);
 }
 
 void loop() {
-  int sensor1 = digitalRead(S0); // sensor extremo esquerdo
-  int sensor2 = digitalRead(S1); // sensor esquerdo
-  int sensor3 = digitalRead(S2); // sensor central
-  int sensor4 = digitalRead(S3); // sensor direito
-  int sensor5 = digitalRead(S4); // sensor extremo direito
+  // Leitura da velocidade (pode substituir por analogRead(pot) se quiser usar potenciômetro)
+  velocidade = 30; // valor entre 0 e 255
 
-  Serial.print("extreme Left: ");
-  Serial.print(sensor1);
-  Serial.print("\t lower left: ");
-  Serial.print(sensor2);
-  Serial.print("\t middle: ");
-  Serial.print(sensor3);
-  Serial.print("\t lowerRight: ");
-  Serial.print(sensor4);
-  Serial.print("\t Extreme Right: ");
-  Serial.println(sensor5);
+  // Leitura dos sensores (inverte lógica se linha for preta)
+  bool s1 = !digitalRead(sensor1);
+  bool s2 = !digitalRead(sensor2);
+  bool s3 = !digitalRead(sensor3);
+  bool s4 = !digitalRead(sensor4);
+  bool s5 = !digitalRead(sensor5);
 
-  if (isOnBlack(sensor1)) {
-    turnLeft();
-  } else {
-    if (isOnBlack(sensor3) && isOnWhite(sensor1)) {
-      moveForward();
-    } else if (isOnWhite(sensor1) && isOnWhite(sensor3) && isOnBlack(sensor5)) {
-      turnRight();
-    } else if (isOnBlack(sensor2)) {
-      turnLeft();
-    } else if (isOnBlack(sensor4)) {
-      turnRight();
-    } else if (isOnWhite(sensor1) && isOnWhite(sensor2) && isOnWhite(sensor3) &&
-               isOnWhite(sensor4) && isOnWhite(sensor5)) {
-      turnCircle();  // caso esteja fora da linha
-    }
+  // Debug no Serial Monitor
+  Serial.print(s1); Serial.print(" ");
+  Serial.print(s2); Serial.print(" ");
+  Serial.print(s3); Serial.print(" ");
+  Serial.print(s4); Serial.print(" ");
+  Serial.println(s5);
+
+  // Movimento para frente (linha no centro)
+  if (s3 && !s2 && !s4) {
+    mover(velocidade, velocidade);
+  }
+  // Curva suave para esquerda
+  else if (s2 && !s1) {
+    mover(velocidade / 2, velocidade);
+  }
+  // Curva suave para direita
+  else if (s4 && !s5) {
+    mover(velocidade, velocidade / 2);
+  }
+  // Curva forte para esquerda
+  else if (s1) {
+    girarEsquerda(velocidade);
+  }
+  // Curva forte para direita
+  else if (s5) {
+    girarDireita(velocidade);
+  }
+  // Nenhum sensor detectando linha: para
+  else {
+    parar();
   }
 
-  delay(1000);
+  delay(10);
+}
+
+// Funções auxiliares
+void mover(int velA, int velB) {
+  analogWrite(MA_frente, velA);
+  analogWrite(MA_tras, 0);
+  analogWrite(MB_frente, velB);
+  analogWrite(MB_tras, 0);
+}
+
+void girarEsquerda(int vel) {
+  analogWrite(MA_frente, 0);
+  analogWrite(MA_tras, vel);
+  analogWrite(MB_frente, vel);
+  analogWrite(MB_tras, 0);
+}
+
+void girarDireita(int vel) {
+  analogWrite(MA_frente, vel);
+  analogWrite(MA_tras, 0);
+  analogWrite(MB_frente, 0);
+  analogWrite(MB_tras, vel);
+}
+
+void parar() {
+  analogWrite(MA_frente, 0);
+  analogWrite(MA_tras, 0);
+  analogWrite(MB_frente, 0);
+  analogWrite(MB_tras, 0);
 }
 
 
@@ -244,7 +117,6 @@ void loop() {
 
 
 
----------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -254,92 +126,127 @@ void loop() {
 
 
 
-// Definição das portas da ponte H
-const int in1 = 11;
-const int in2 = 10;
-const int in3 = 5;
-const int in4 = 6;
 
-// Definição das portas dos sensores infravermelhos
-const int sensor1 = 2;
-const int sensor2 = 2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const int in1 = 11; 
+const int in2 = 10; 
+const int in3 = 5; 
+const int in4 = 6; 
+
+const int sensor1 = 12; 
+const int sensor2 = 8;
 const int sensor3 = 2;
-const int sensor4 = 2;
-const int sensor5 = 2;
+const int sensor4 = 4;
+const int sensor5 = 7; 
 
+const int velocidade = 30;
 
 void setup() {
-  // Configuração das portas da ponte H como saídas
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  pinMode(in3, OUTPUT);
-  pinMode(in4, OUTPUT);
-  
-  // Configuração das portas dos sensores infravermelhos como entradas
-  pinMode(sensorEsquerdaD0, INPUT);
-  pinMode(sensorDireitaD0, INPUT);
+  pinMode(in1, OUTPUT); 
+  pinMode(in2, OUTPUT); 
+  pinMode(in3, OUTPUT); 
+  pinMode(in4, OUTPUT); 
+
+  pinMode(sensor1, INPUT); 
+  pinMode(sensor2, INPUT);
+  pinMode(sensor3, INPUT);
+  pinMode(sensor4, INPUT);
+  pinMode(sensor5, INPUT);
 }
 
 void loop() {
-  // Leitura dos sensores infravermelhos
-  int leituraEsquerda = digitalRead(sensorEsquerdaD0);
-  int leituraDireita = digitalRead(sensorDireitaD0);
+  int s1 = digitalRead(sensor1); 
+  int s2 = digitalRead(sensor2); 
+  int s3 = digitalRead(sensor3); 
+  int s4 = digitalRead(sensor4); 
+  int s5 = digitalRead(sensor5); 
 
-  // Caso os dois sensores detectem a linha (ambos sensores na linha)
-  if (leituraEsquerda == LOW && leituraDireita == LOW) {
+  // Prioridade para o sensor central
+  if (s3 == LOW && s2 == HIGH && s4 == HIGH) {
     andarParaFrente();
   }
-  // Caso o sensor da esquerda detecte a linha (ajustar para a esquerda)
-  else if (leituraEsquerda == LOW && leituraDireita == HIGH) {
+  // Leve desvio à esquerda
+  else if (s2 == LOW && s1 == HIGH) {
+    corrigirLeveEsquerda();
+  }
+  // Leve desvio à direita
+  else if (s4 == LOW && s5 == HIGH) {
+    corrigirLeveDireita();
+  }
+  // Curva acentuada à esquerda
+  else if (s1 == LOW) {
     virarEsquerda();
   }
-  // Caso o sensor da direita detecte a linha (ajustar para a direita)
-  else if (leituraEsquerda == HIGH && leituraDireita == LOW) {
+  // Curva acentuada à direita
+  else if (s5 == LOW) {
     virarDireita();
   }
-  // Caso nenhum sensor detecte a linha (parar ou tomar uma ação específica)
+  // Linha desaparecida (tudo branco)
   else {
     parar();
   }
 }
 
 void andarParaFrente() {
+  analogWrite(in1, velocidade); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, velocidade); 
+  analogWrite(in4, 0); 
+}
 
-  //motor 1  
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  
-  //motor 2
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
+void corrigirLeveEsquerda() {
+  analogWrite(in1, velocidade / 2);  // reduz motor esquerdo
+  analogWrite(in2, 0); 
+  analogWrite(in3, velocidade); 
+  analogWrite(in4, 0); 
+}
+
+void corrigirLeveDireita() {
+  analogWrite(in1, velocidade); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, velocidade / 2);  // reduz motor direito
+  analogWrite(in4, 0); 
 }
 
 void virarEsquerda() {
-  //motor 1
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-
-  //motor 2
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
+  analogWrite(in1, 0); 
+  analogWrite(in2, velocidade); 
+  analogWrite(in3, velocidade); 
+  analogWrite(in4, 0); 
 }
 
-void virarDireita() { 
-  //motor 1
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-
-  //motor 2
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
+void virarDireita() {
+  analogWrite(in1, velocidade); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, 0); 
+  analogWrite(in4, velocidade); 
 }
 
 void parar() {
-  //motor 1
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-
-  //motor 2
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, LOW);
+  analogWrite(in1, 0); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, 0); 
+  analogWrite(in4, 0); 
 }
