@@ -250,3 +250,286 @@ void parar() {
   analogWrite(in3, 0); 
   analogWrite(in4, 0); 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // Sensores nas portas digitais
+ const int sensorEsquerda = 12 ;
+ const int sensorMeio = 2 ;
+ const int sensorDireita = 7 ;
+
+ // Motores (pinos PWM)
+ const int IN1 = 11 ; 
+ const int IN2 = 10 ;
+ const int IN3 = 5 ; 
+ const int IN4 = 6 ;
+
+ // Velocidades
+ const int velocidadeReta = 70 ;
+ const int velocidadeCurva = 40 ;
+ void setup () {
+ pinMode ( sensorEsquerda, INPUT ) ;
+ pinMode ( sensorMeio, INPUT ) ;
+ pinMode ( sensorDireita, INPUT ) ;
+
+ pinMode ( IN1, OUTPUT ) ;
+ pinMode ( IN2, OUTPUT ) ;
+ pinMode ( IN3, OUTPUT ) ;
+ pinMode ( IN4, OUTPUT ) ;
+
+Serial.begin ( 9600 ) ; // Comunicação serial
+ }
+
+ void loop () {
+ // Leitura dos sensores
+ int leituraEsquerda= digitalRead ( sensorEsquerda ) ;
+ int leituraMeio= digitalRead ( sensorMeio ) ;
+ int leituraDireita= digitalRead ( sensorDireita ) ;
+
+ // Exibir os valores no monitor serial
+Serial.print ( "Esq: " ) ;
+Serial.print( leituraEsquerda ) ;
+Serial.print ( " | Meio: " ) ;
+Serial.print ( leituraMeio ) ;
+Serial.print ( " | Dir: " ) ;
+Serial.println ( leituraDireita ) ;
+if (leituraMeio == HIGH && leituraEsquerda == LOW && leituraDireita == LOW) {
+  // Reto
+  analogWrite(IN1, 0);
+  analogWrite(IN2, velocidadeReta);
+  analogWrite(IN3, velocidadeReta);
+  analogWrite(IN4, 0);
+}
+
+else if (leituraDireita == HIGH && leituraMeio == LOW && leituraEsquerda == LOW) {
+  // Curva fechada à esquerda
+  analogWrite(IN1, velocidadeCurva);
+  analogWrite(IN2, 0);
+  analogWrite(IN3, velocidadeReta);
+  analogWrite(IN4, 0);
+}
+
+else if (leituraEsquerda == HIGH && leituraMeio == LOW && leituraDireita == LOW) {
+  // Curva fechada à direita
+  analogWrite(IN1, 0);
+  analogWrite(IN2, velocidadeReta);
+  analogWrite(IN3, 0);
+  analogWrite(IN4, velocidadeCurva);
+}
+
+else if (leituraDireita == HIGH && leituraMeio == HIGH && leituraEsquerda == LOW) {
+  // Curva leve à esquerda
+  analogWrite(IN1, 0);
+  analogWrite(IN2, velocidadeCurva);
+  analogWrite(IN3, velocidadeReta);
+  analogWrite(IN4, 0);
+}
+
+else if (leituraEsquerda == HIGH && leituraMeio == HIGH && leituraDireita == LOW) {
+  // Curva leve à direita
+  analogWrite(IN1, 0);
+  analogWrite(IN2, velocidadeReta);
+  analogWrite(IN3, velocidadeCurva);
+  analogWrite(IN4, 0);
+}
+
+else if (leituraEsquerda == HIGH && leituraMeio == LOW && leituraDireita == HIGH) {
+  // Pode ser bifurcação ou curva muito acentuada
+  analogWrite(IN1, velocidadeCurva);
+  analogWrite(IN2, 0);
+  analogWrite(IN3, velocidadeCurva);
+  analogWrite(IN4, 0);
+}
+
+else if (leituraEsquerda == HIGH && leituraMeio == HIGH && leituraDireita == HIGH) {
+  // Continua reto
+  analogWrite(IN1, 0);
+  analogWrite(IN2, velocidadeReta);
+  analogWrite(IN3, velocidadeReta);
+  analogWrite(IN4, 0);
+}
+ else if (leituraEsquerda == LOW && leituraMeio == LOW && leituraDireita == LOW) {
+  // Parado
+  analogWrite(IN1, 0);
+  analogWrite(IN2, 80);
+  analogWrite(IN3, 80);
+  analogWrite(IN4, 0);
+  delay(10);
+ }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Potenciômetro (opcional)
+#define pot A0
+int velocidade;
+
+// Sensores (de fora para o centro: s1 a s5)
+#define sensor1 12
+#define sensor2 8
+#define sensor3 2
+#define sensor4 4
+#define sensor5 7
+
+// Motores
+#define MA_frente 11
+#define MA_tras 10
+#define MB_frente 5
+#define MB_tras 6
+
+void setup() {
+  Serial.begin(9600);
+
+  // Configura sensores como entrada
+  pinMode(sensor1, INPUT);
+  pinMode(sensor2, INPUT);
+  pinMode(sensor3, INPUT);
+  pinMode(sensor4, INPUT);
+  pinMode(sensor5, INPUT);
+
+  // Configura motores como saída
+  pinMode(MA_frente, OUTPUT);
+  pinMode(MA_tras, OUTPUT);
+  pinMode(MB_frente, OUTPUT);
+  pinMode(MB_tras, OUTPUT);
+}
+
+void loop() {
+  // Leitura da velocidade (ou use analogRead(pot) se quiser ajustar com potenciômetro)
+  velocidade = 100; // valor entre 0 e 255
+
+  // Leitura dos sensores (inverte lógica: true = linha preta)
+  bool s1 = !digitalRead(sensor1);
+  bool s2 = !digitalRead(sensor2);
+  bool s3 = !digitalRead(sensor3);
+  bool s4 = !digitalRead(sensor4);
+  bool s5 = !digitalRead(sensor5);
+
+  // Debug no Serial Monitor
+  Serial.print(s1); Serial.print(" ");
+  Serial.print(s2); Serial.print(" ");
+  Serial.print(s3); Serial.print(" ");
+  Serial.print(s4); Serial.print(" ");
+  Serial.print(s5); Serial.print(" ");
+
+  // Movimento para frente (linha central detectada)
+  if (s3 && !s2 && !s4) {
+    mover(velocidade, velocidade);
+  }
+  // Curva suave para esquerda
+  else if (s2 && !s1) {
+    mover(velocidade / 2, velocidade);
+  }
+  // Curva suave para direita
+  else if (s4 && !s5) {
+    mover(velocidade, velocidade / 2);
+  }
+  // Curva forte para esquerda
+  else if (s1) {
+    girarEsquerda(velocidade);
+  }
+  // Curva forte para direita
+  else if (s5) {
+    girarDireita(velocidade);
+  }
+  // Nenhum sensor detecta linha: parar
+  else {
+    parar();
+  }
+
+  delay(10);
+}
+
+// Função para mover para frente com velocidades diferentes
+void mover(int velA, int velB) {
+  analogWrite(MA_frente, velA);
+  analogWrite(MA_tras, 0);
+  analogWrite(MB_frente, velB);
+  analogWrite(MB_tras, 0);
+}
+
+// Gira para esquerda: motor A para trás, motor B para frente
+void girarEsquerda(int vel) {
+  analogWrite(MA_frente, 0);
+  analogWrite(MA_tras, vel);
+  analogWrite(MB_frente, vel);
+  analogWrite(MB_tras, 0);
+}
+
+// Gira para direita: motor A para frente, motor B para trás
+void girarDireita(int vel) {
+  analogWrite(MA_frente, vel);
+  analogWrite(MA_tras, 0);
+  analogWrite(MB_frente, 0);
+  analogWrite(MB_tras, vel);
+}
+
+// Parar todos os motores
+void parar() {
+  analogWrite(MA_frente, 0);
+  analogWrite(MA_tras, 0);
+  analogWrite(MB_frente, 0);
+  analogWrite(MB_tras, 0);
+}
