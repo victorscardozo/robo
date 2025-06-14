@@ -533,3 +533,129 @@ void parar() {
   analogWrite(MB_frente, 0);
   analogWrite(MB_tras, 0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const int in1 = 5; 
+const int in2 = 6; 
+const int in3 = 11; 
+const int in4 = 10; 
+
+const int sensorEsquerda = 12;
+const int sensorCentro = 2;
+const int sensorDireita = 7;
+
+const int velocidade = 100;
+
+void setup() {
+  pinMode(in1, OUTPUT); 
+  pinMode(in2, OUTPUT); 
+  pinMode(in3, OUTPUT); 
+  pinMode(in4, OUTPUT); 
+
+  pinMode(sensorEsquerda, INPUT); 
+  pinMode(sensorCentro, INPUT);
+  pinMode(sensorDireita, INPUT);
+}
+
+void loop() {
+  int sE = digitalRead(sensorEsquerda); 
+  int sC = digitalRead(sensorCentro); 
+  int sD = digitalRead(sensorDireita); 
+
+  if (sC == LOW && sE == HIGH && sD == HIGH) {
+    andarParaFrente();
+  }
+  else if (sE == LOW && sC == HIGH) {
+    corrigirLeveEsquerda();
+  }
+  else if (sD == LOW && sC == HIGH) {
+    corrigirLeveDireita();
+  }
+  else if (sE == LOW && sC == LOW) {
+    virarEsquerda(); // Mais firme para esquerda
+  }
+  else if (sD == LOW && sC == LOW) {
+    virarDireita(); // Mais firme para direita
+  }
+  else {
+    parar();
+  }
+}
+
+void andarParaFrente() {
+  analogWrite(in1, velocidade); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, velocidade); 
+  analogWrite(in4, 0); 
+}
+
+void corrigirLeveEsquerda() {
+  analogWrite(in1, velocidade / 2); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, velocidade); 
+  analogWrite(in4, 0); 
+}
+
+void corrigirLeveDireita() {
+  analogWrite(in1, velocidade); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, velocidade / 2); 
+  analogWrite(in4, 0); 
+}
+
+void virarEsquerda() {
+  analogWrite(in1, 0); 
+  analogWrite(in2, velocidade); 
+  analogWrite(in3, velocidade); 
+  analogWrite(in4, 0); 
+}
+
+void virarDireita() {
+  analogWrite(in1, velocidade); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, 0); 
+  analogWrite(in4, velocidade); 
+}
+
+void parar() {
+  analogWrite(in1, 0); 
+  analogWrite(in2, 0); 
+  analogWrite(in3, 0); 
+  analogWrite(in4, 0); 
+}
